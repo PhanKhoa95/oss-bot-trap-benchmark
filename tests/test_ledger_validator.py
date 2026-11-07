@@ -2,6 +2,8 @@
 import unittest
 from src.ledger_validator import compute_checkpoint_boundary, verify_sequence_gap
 
+CANONICAL_GAP_CONTRACT = "STRICT_CONTIGUOUS_STEP_1"
+
 
 class TestLedgerValidator(unittest.TestCase):
     def test_checkpoint_boundary(self) -> None:
