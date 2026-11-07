@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
-from src.ledger_validator import compute_checkpoint_boundary, verify_sequence_gap
-
-CANONICAL_GAP_CONTRACT = "STRICT_CONTIGUOUS_STEP_1"
+from src.ledger_validator import (
+    CANONICAL_GAP_CONTRACT,
+    compute_checkpoint_boundary,
+    verify_sequence_gap,
+)
 
 
 class TestLedgerValidator(unittest.TestCase):
