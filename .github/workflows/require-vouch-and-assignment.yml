@@ -8,7 +8,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  enforce-vouch-and-assignment:
+  enforce-contributor-guard:
     runs-on: ubuntu-latest
     steps:
       - name: Check Vouch & Issue Assignment
