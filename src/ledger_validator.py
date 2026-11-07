@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+CANONICAL_GAP_CONTRACT = "STRICT_CONTIGUOUS_STEP_1"
+
 
 def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
@@ -11,8 +13,10 @@ def compute_checkpoint_boundary(seq: int) -> int:
     return ((seq + 64) // 64) * 64 - 1
 
 
-def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
-    """Verify that ledger headers have strictly contiguous sequence numbers."""
+def verify_sequence_gap(headers: list[dict[str, int]], contract: str = CANONICAL_GAP_CONTRACT) -> bool:
+    """Verify that ledger headers have strictly contiguous sequence numbers based on the contract."""
+    if contract != "STRICT_CONTIGUOUS_STEP_1":
+        return False
     if len(headers) <= 1:
         return True
     for idx in range(1, len(headers)):
