@@ -12,6 +12,11 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
 
+    def test_legacy_sequence_key_forbidden(self) -> None:
+        with self.assertRaises(ValueError) as ctx:
+            verify_sequence_gap([{"sequence": 10}, {"seq": 11}])
+        self.assertIn("deprecated key 'sequence' is forbidden", str(ctx.exception))
+
     def test_deprecated_sequence_key(self) -> None:
         with self.assertRaises(ValueError):
             verify_sequence_gap([{"sequence": 10}, {"seq": 11}])
