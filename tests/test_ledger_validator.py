@@ -8,6 +8,17 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertEqual(compute_checkpoint_boundary(1), 63)
         self.assertEqual(compute_checkpoint_boundary(64), 127)
 
+    def test_checkpoint_boundary_rejects_bool_and_float(self) -> None:
+        with self.assertRaises(TypeError) as ctx:
+            compute_checkpoint_boundary(True)
+        self.assertEqual(str(ctx.exception), "seq must be an exact int")
+        with self.assertRaises(TypeError) as ctx:
+            compute_checkpoint_boundary(False)
+        self.assertEqual(str(ctx.exception), "seq must be an exact int")
+        with self.assertRaises(TypeError) as ctx:
+            compute_checkpoint_boundary(1.0)
+        self.assertEqual(str(ctx.exception), "seq must be an exact int")
+
     def test_sequence_continuity(self) -> None:
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
