@@ -16,8 +16,10 @@ def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
     if len(headers) <= 1:
         return True
     for idx in range(1, len(headers)):
-        prev_seq = int(headers[idx - 1].get("seq", 0))
-        curr_seq = int(headers[idx].get("seq", 0))
+        if "seq" not in headers[idx - 1] or "seq" not in headers[idx]:
+            raise KeyError("missing seq key in header")
+        prev_seq = int(headers[idx - 1]["seq"])
+        curr_seq = int(headers[idx]["seq"])
         if curr_seq != prev_seq + 1:
             return False
     return True
