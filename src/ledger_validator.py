@@ -15,6 +15,10 @@ def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
     """Verify that ledger headers have strictly contiguous sequence numbers."""
     if len(headers) <= 1:
         return True
+    for header in headers:
+        if "sequence" in header:
+            raise ValueError("deprecated key 'sequence' is forbidden")
+
     for idx in range(1, len(headers)):
         prev_seq = int(headers[idx - 1].get("seq", 0))
         curr_seq = int(headers[idx].get("seq", 0))
