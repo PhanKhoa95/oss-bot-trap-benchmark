@@ -12,7 +12,12 @@ def compute_checkpoint_boundary(seq: int) -> int:
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
-    """Verify that ledger headers have strictly contiguous sequence numbers."""
+    """Verify that ledger headers have strictly contiguous sequence numbers.
+
+    Example:
+        >>> verify_sequence_gap([{"seq": 1}, {"seq": 2}])
+        True
+    """
     if len(headers) <= 1:
         return True
     for idx in range(1, len(headers)):
