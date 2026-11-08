@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 
-def compute_checkpoint_boundary(seq: int) -> int:
-    """Return the 64-ledger checkpoint boundary for a positive sequence number."""
-    if seq < 1:
-        raise ValueError("sequence number must be >= 1")
+def compute_checkpoint_boundary(seq: int, genesis_floor: int = 1) -> int:
+    """Return the 64-ledger checkpoint boundary for a sequence number >= genesis_floor."""
+    if seq < genesis_floor:
+        raise ValueError(f"sequence number must be >= {genesis_floor}")
     return ((seq + 64) // 64) * 64 - 1
 
 
