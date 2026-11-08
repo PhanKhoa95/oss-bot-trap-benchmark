@@ -17,3 +17,6 @@ class TestQuantExecutionGuard(unittest.TestCase):
         self.assertEqual((sig, lev), (1, 10))
         with self.assertRaises(ValueError):
             evaluate_bar_signal_and_leverage(candles, 1, notional=1000, margin_equity=0)
+    def test_amm_swap_out_verification(self) -> None:
+        out = compute_amm_swap_out(200000, 1000000, 1000000, fee_bps=30, slippage_bps=50)
+        self.assertEqual(out, 165336)
