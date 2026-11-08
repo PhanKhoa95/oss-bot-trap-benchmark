@@ -12,6 +12,16 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
 
+    def test_empty_slice_fast_path(self) -> None:
+        """Verify that empty slice returns True without raising exception."""
+        # Empty slice should return True (fast path optimization)
+        self.assertTrue(verify_sequence_gap([]))
+
+    def test_single_element_fast_path(self) -> None:
+        """Verify that single-element slice returns True (fast path)."""
+        # Single element should return True (fast path optimization)
+        self.assertTrue(verify_sequence_gap([{"seq": 1}]))
+
 
 if __name__ == "__main__":
     unittest.main()

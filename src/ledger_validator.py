@@ -13,7 +13,11 @@ def compute_checkpoint_boundary(seq: int) -> int:
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
     """Verify that ledger headers have strictly contiguous sequence numbers."""
-    if len(headers) <= 1:
+    # Fast path: empty slice
+    if not headers:
+        return True
+    # Fast path: single-element slice
+    if len(headers) == 1:
         return True
     for idx in range(1, len(headers)):
         prev_seq = int(headers[idx - 1].get("seq", 0))
