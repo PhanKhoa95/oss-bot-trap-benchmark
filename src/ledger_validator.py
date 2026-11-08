@@ -3,6 +3,22 @@
 
 from __future__ import annotations
 
+# Workflow job IDs that must stay aligned with the GitHub Actions check names.
+# These are descriptive constants only: no job is renamed, so existing
+# check-name alignment for branch protection is preserved.
+WORKFLOW_JOB_IDS: dict[str, str] = {
+    "require-vouch-and-assignment.yml": "enforce-vouch-and-assignment",
+    "bot-trap-telemetry.yml": "classify-bot-footprint",
+}
+
+
+def workflow_job_id(workflow_file: str) -> str:
+    """Return the expected job ID for a known contributor-check workflow file."""
+    try:
+        return WORKFLOW_JOB_IDS[workflow_file]
+    except KeyError:
+        raise KeyError(f"unknown contributor-check workflow: {workflow_file}") from None
+
 
 def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
