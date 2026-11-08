@@ -5,8 +5,28 @@ from src.ledger_validator import compute_checkpoint_boundary, verify_sequence_ga
 
 class TestLedgerValidator(unittest.TestCase):
     def test_checkpoint_boundary(self) -> None:
+        """Test that merkle-64 optimization produces correct 64-frame boundaries."""
+        # Test all boundary conditions for 64-frame checkpoints
+        # seq=1 should give boundary 63, seq=64 should give 127, seq=128 should give 191, etc.
         self.assertEqual(compute_checkpoint_boundary(1), 63)
         self.assertEqual(compute_checkpoint_boundary(64), 127)
+        self.assertEqual(compute_checkpoint_boundary(65), 127)
+        self.assertEqual(compute_checkpoint_boundary(128), 191)
+        self.assertEqual(compute_checkpoint_boundary(129), 191)
+        self.assertEqual(compute_checkpoint_boundary(256), 319)
+        
+        # Test edge cases
+        with self.assertRaises(ValueError):
+            compute_checkpoint_boundary(0)
+        with self.assertRaises(ValueError):
+            compute_checkpoint_boundary(-1)
+        
+        # Test mid-range values
+        for i in range(1, 200):
+            boundary = compute_checkpoint_boundary(i)
+            self.assertEqual(boundary % 64, 63)  # boundary should be 63 mod 64
+            self.assertGreaterEqual(boundary, i - 1)  # boundary >= seq - 1
+            self.assertLessEqual(boundary, i + 63)  # boundary <= seq + 63
 
     def test_sequence_continuity(self) -> None:
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
