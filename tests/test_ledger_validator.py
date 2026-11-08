@@ -14,6 +14,22 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
 
+    def test_missing_seq_key(self) -> None:
+        # Test single header missing 'seq'
+        with self.assertRaises(KeyError) as cm:
+            verify_sequence_gap([{"height": 1}])
+        self.assertEqual(str(cm.exception), "missing seq key in header")
+        
+        # Test middle header missing 'seq'
+        with self.assertRaises(KeyError) as cm:
+            verify_sequence_gap([{"seq": 1}, {"height": 2}, {"seq": 3}])
+        self.assertEqual(str(cm.exception), "missing seq key in header")
+        
+        # Test multiple headers missing 'seq'
+        with self.assertRaises(KeyError) as cm:
+            verify_sequence_gap([{"seq": 1}, {"height": 2}])
+        self.assertEqual(str(cm.exception), "missing seq key in header")
+
 
 if __name__ == "__main__":
     unittest.main()
