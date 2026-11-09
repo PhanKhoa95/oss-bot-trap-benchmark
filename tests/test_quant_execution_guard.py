@@ -17,3 +17,30 @@ class TestQuantExecutionGuard(unittest.TestCase):
         self.assertEqual((sig, lev), (1, 10))
         with self.assertRaises(ValueError):
             evaluate_bar_signal_and_leverage(candles, 1, notional=1000, margin_equity=0)
+
+    def test_causal_index_lower_boundary(self) -> None:
+        candles = [{"close": 100}, {"close": 105}, {"close": 90}]
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, 0, notional=1000, margin_equity=100)
+
+    def test_causal_index_upper_boundary(self) -> None:
+        candles = [{"close": 100}, {"close": 105}, {"close": 90}]
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, len(candles), notional=1000, margin_equity=100)
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, 99, notional=1000, margin_equity=100)
+
+    def test_signal_uses_only_previous_bar(self) -> None:
+        # bar at index 1 must be compared with index 0, never with a future bar
+        rising = [{"close": 100}, {"close": 101}, {"close": 50}]
+        falling = [{"close": 100}, {"close": 99}, {"close": 500}]
+        self.assertEqual(evaluate_bar_signal_and_leverage(rising, 1, 1000, 100)[0], 1)
+        self.assertEqual(evaluate_bar_signal_and_leverage(falling, 1, 1000, 100)[0], -1)
+        flat = [{"close": 100}, {"close": 100}, {"close": 777}]
+        self.assertEqual(evaluate_bar_signal_and_leverage(flat, 1, 1000, 100)[0], 0)
+
+    def test_leverage_upper_boundary(self) -> None:
+        candles = [{"close": 100}, {"close": 105}]
+        self.assertEqual(evaluate_bar_signal_and_leverage(candles, 1, 2000, 100)[1], 20)
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, 1, 2100, 100)
