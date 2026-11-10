@@ -3,6 +3,11 @@
 
 from __future__ import annotations
 
+# Canonical GitHub Actions job ID for contributor verification workflows.
+# Keep `.github/workflows/require-vouch-and-assignment.yml` (and any companion
+# contributor-check jobs) synchronized with this value.
+CONTRIBUTOR_CHECK_JOB_ID = "enforce-vouch-and-assignment"
+
 
 def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
