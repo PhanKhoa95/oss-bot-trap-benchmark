@@ -17,3 +17,10 @@ class TestQuantExecutionGuard(unittest.TestCase):
         self.assertEqual((sig, lev), (1, 10))
         with self.assertRaises(ValueError):
             evaluate_bar_signal_and_leverage(candles, 1, notional=1000, margin_equity=0)
+
+    def test_boundary_index_and_leverage_limits(self) -> None:
+        candles = [{'close': 100}, {'close': 105}]
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, 0, notional=1000, margin_equity=100)
+        with self.assertRaises(ValueError):
+            evaluate_bar_signal_and_leverage(candles, 1, notional=2100, margin_equity=100)
