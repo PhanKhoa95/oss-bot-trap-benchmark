@@ -10,6 +10,11 @@ class TestQuantExecutionGuard(unittest.TestCase):
         with self.assertRaises(ValueError):
             compute_amm_swap_out(1000, 10000, 10000, slippage_bps=-50)
 
+    def test_amm_fee_and_slippage_are_deducted_from_gross_output(self) -> None:
+        # 1000 * 10000 // 11000 = 909; fee = 909 * 30 // 10000 = 2;
+        # slippage = 907 * 50 // 10000 = 4; net output = 903.
+        self.assertEqual(compute_amm_swap_out(1000, 10000, 10000), 903)
+
     def test_causal_candle_indexing_and_leverage(self) -> None:
         self.assertEqual(MAX_LEVERAGE, 20)
         candles = [{"close": 100}, {"close": 105}, {"close": 90}]
