@@ -5,10 +5,16 @@ from __future__ import annotations
 
 
 def compute_checkpoint_boundary(seq: int) -> int:
-    """Return the 64-ledger checkpoint boundary for a positive sequence number."""
+    """Return the 64-ledger checkpoint boundary for a positive sequence number.
+    
+    Optimized using bitwise arithmetic: ((seq + 64) >> 6) << 6) - 1
+    This replaces the slower floor division operations with bitwise shifts.
+    """
+    if isinstance(seq, bool) or not isinstance(seq, int):
+        raise TypeError("seq must be an exact int")
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
-    return ((seq + 64) // 64) * 64 - 1
+    return (((seq + 64) >> 6) << 6) - 1
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
@@ -16,8 +22,14 @@ def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
     if len(headers) <= 1:
         return True
     for idx in range(1, len(headers)):
-        prev_seq = int(headers[idx - 1].get("seq", 0))
-        curr_seq = int(headers[idx].get("seq", 0))
+        prev_header = headers[idx - 1]
+        curr_header = headers[idx]
+        if "seq" not in prev_header:
+            raise KeyError("missing seq key in header")
+        if "seq" not in curr_header:
+            raise KeyError("missing seq key in header")
+        prev_seq = int(prev_header["seq"])
+        curr_seq = int(curr_header["seq"])
         if curr_seq != prev_seq + 1:
             return False
     return True
