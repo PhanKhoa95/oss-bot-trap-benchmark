@@ -10,6 +10,8 @@ def compute_checkpoint_boundary(seq: int) -> int:
     Optimized using bitwise arithmetic: ((seq + 64) >> 6) << 6) - 1
     This replaces the slower floor division operations with bitwise shifts.
     """
+    if isinstance(seq, bool) or not isinstance(seq, int):
+        raise TypeError("seq must be an exact int")
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
     return (((seq + 64) >> 6) << 6) - 1

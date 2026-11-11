@@ -20,6 +20,14 @@ class TestLedgerValidator(unittest.TestCase):
             compute_checkpoint_boundary(0)
         with self.assertRaises(ValueError):
             compute_checkpoint_boundary(-1)
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary(True)  # type: ignore
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary(False)  # type: ignore
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary(1.5)  # type: ignore
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary("1")  # type: ignore
         
         # Test mid-range values
         for i in range(1, 200):
