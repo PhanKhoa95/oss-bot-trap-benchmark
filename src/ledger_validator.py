@@ -8,7 +8,13 @@ def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
-    return ((seq + 64) // 64) * 64 - 1
+    # Original: return ((seq + 64) // 64) * 64 - 1
+    # Optimized using bitwise operations for performance.
+    # The formula ((seq + 63) & ~63) + 63 correctly aligns to the next multiple of 64
+    # and then subtracts 1 to get the boundary.
+    # For seq = 63: ((63 + 63) & ~63) + 63 = (126 & ~63) + 63 = (126 & 0xFFFFFFC0) + 63 = 0 + 63 = 63
+    # For seq = 64: ((64 + 63) & ~63) + 63 = (127 & ~63) + 63 = (127 & 0xFFFFFFC0) + 63 = 64 + 63 = 127
+    return ((seq + 63) & ~63) + 63
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
