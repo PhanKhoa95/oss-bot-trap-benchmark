@@ -3,12 +3,18 @@
 
 from __future__ import annotations
 
+CHECKPOINT_DIVISOR = 64
+
 
 def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
+    if not isinstance(seq, int):
+        raise TypeError("sequence number must be an integer")
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
-    return ((seq + 64) // 64) * 64 - 1
+    
+    # Using the constant CHECKPOINT_DIVISOR = 64 as defined in the production logic
+    return ((seq + CHECKPOINT_DIVISOR) // CHECKPOINT_DIVISOR) * CHECKPOINT_DIVISOR - 1
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
