@@ -54,6 +54,26 @@ class TestLedgerValidator(unittest.TestCase):
             verify_sequence_gap([{"seq": 1}, {"other": 2}, {"seq": 3}])
         self.assertEqual(str(ctx.exception), "'missing seq key in header'")
 
+    def test_checkpoint_boundary_counterexample(self) -> None:
+        """Boundary counterexample: bitwise shift must match floor division at exact 64 crossings.
+
+        An off-by-one in the shift-based arithmetic would flip the result at
+        exact multiples of 64 (and just past them), so these must hold
+        precisely. Each case asserts there is no counterexample to the
+        invariant ``boundary % 64 == 63`` at a real 64-frame boundary.
+        """
+        cases = [
+            (64, 127),
+            (65, 127),
+            (128, 191),
+            (129, 191),
+            (256, 319),
+            (257, 319),
+        ]
+        for seq, expected in cases:
+            self.assertEqual(compute_checkpoint_boundary(seq), expected)
+            self.assertEqual(compute_checkpoint_boundary(seq) % 64, 63)
+
 
 if __name__ == "__main__":
     unittest.main()
