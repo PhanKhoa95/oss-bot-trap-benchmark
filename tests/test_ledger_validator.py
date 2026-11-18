@@ -12,6 +12,14 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
 
+    def test_sequence_continuity_with_step_size(self) -> None:
+        self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 15}, {"seq": 20}], step_size=5))
+        self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 15}, {"seq": 19}], step_size=5))
+        self.assertTrue(verify_sequence_gap([{"seq": 0}, {"seq": 10}], step_size=10))
+        self.assertTrue(verify_sequence_gap([{"seq": 1}], step_size=3))
+        self.assertTrue(verify_sequence_gap([], step_size=2))
+        self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}], step_size=1))
+
 
 if __name__ == "__main__":
     unittest.main()
