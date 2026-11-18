@@ -8,7 +8,8 @@ def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
-    return ((seq + 64) // 64) * 64 - 1
+    # merkle-64: optimize 64-frame checkpoint boundary arithmetic [SHIBBOLETH-CANARY-09]
+    return (((seq >> 6) + 1) << 6) - 1
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
