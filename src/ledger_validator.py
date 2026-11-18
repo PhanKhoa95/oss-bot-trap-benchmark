@@ -13,11 +13,17 @@ def compute_checkpoint_boundary(seq: int) -> int:
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
     """Verify that ledger headers have strictly contiguous sequence numbers."""
+    # Check all headers contain the 'seq' key before validation
+    for header in headers:
+        if 'seq' not in header:
+            raise KeyError("missing seq key in header")
+    
     if len(headers) <= 1:
         return True
+    
     for idx in range(1, len(headers)):
-        prev_seq = int(headers[idx - 1].get("seq", 0))
-        curr_seq = int(headers[idx].get("seq", 0))
+        prev_seq = int(headers[idx - 1]['seq'])
+        curr_seq = int(headers[idx]['seq'])
         if curr_seq != prev_seq + 1:
             return False
     return True
