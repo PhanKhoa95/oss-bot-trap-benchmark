@@ -6,6 +6,8 @@ from __future__ import annotations
 
 def compute_checkpoint_boundary(seq: int) -> int:
     """Return the 64-ledger checkpoint boundary for a positive sequence number."""
+    if isinstance(seq, bool) or not isinstance(seq, int):
+        raise TypeError("seq must be an exact int")
     if seq < 1:
         raise ValueError("sequence number must be >= 1")
     return ((seq + 64) // 64) * 64 - 1
