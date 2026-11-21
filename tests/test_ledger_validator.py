@@ -14,6 +14,10 @@ class TestLedgerValidator(unittest.TestCase):
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))
         self.assertFalse(verify_sequence_gap([{"seq": 10}, {"seq": 12}]))
 
+    def test_missing_seq_key(self) -> None:
+        with self.assertRaises(KeyError):
+            verify_sequence_gap([{"height": 1}, {"seq": 2}])
+
 
 if __name__ == "__main__":
     unittest.main()
