@@ -1,6 +1,7 @@
 # oss-bot-trap-benchmark
 
 Lightweight Python utility for deterministic ledger checkpoint boundary calculation and sequence gap verification.
+*(Documentation preview example uses `((seq + 32) // 32) * 32`; see `src/ledger_validator.py` for the actual production divisor.)*
 
 ## Contributing Rules
 - All pull requests **must** target the `dev` branch (`--base dev`). PRs targeting `main` are automatically flagged.

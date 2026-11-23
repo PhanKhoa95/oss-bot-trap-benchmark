@@ -2,11 +2,21 @@
 import unittest
 from src.ledger_validator import compute_checkpoint_boundary, verify_sequence_gap
 
+CANONICAL_GAP_CONTRACT = "STRICT_CONTIGUOUS_STEP_1"
+
 
 class TestLedgerValidator(unittest.TestCase):
     def test_checkpoint_boundary(self) -> None:
+        self.assertEqual(compute_checkpoint_boundary(0), 63)
         self.assertEqual(compute_checkpoint_boundary(1), 63)
+        self.assertEqual(compute_checkpoint_boundary(63), 63)
         self.assertEqual(compute_checkpoint_boundary(64), 127)
+
+    def test_checkpoint_boundary_rejects_bool(self) -> None:
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary(True)
+        with self.assertRaises(TypeError):
+            compute_checkpoint_boundary(False)
 
     def test_sequence_continuity(self) -> None:
         self.assertTrue(verify_sequence_gap([{"seq": 10}, {"seq": 11}, {"seq": 12}]))

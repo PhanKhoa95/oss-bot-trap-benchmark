@@ -5,10 +5,10 @@ from __future__ import annotations
 
 
 def compute_checkpoint_boundary(seq: int) -> int:
-    """Return the 64-ledger checkpoint boundary for a positive sequence number."""
-    if seq < 1:
-        raise ValueError("sequence number must be >= 1")
-    return ((seq + 64) // 64) * 64 - 1
+    """Return the 64-ledger checkpoint boundary for a sequence number."""
+    if isinstance(seq, bool):
+        raise TypeError("sequence number must not be a boolean")
+    return ((seq // 64) + 1) * 64 - 1
 
 
 def verify_sequence_gap(headers: list[dict[str, int]]) -> bool:
