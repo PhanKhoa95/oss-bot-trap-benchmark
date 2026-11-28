@@ -14,7 +14,7 @@ export function computeDerivedHints(statusCode: number, explicitRetryable?: bool
 export function markTxConsumed(existing: TxConsumptionRecord | undefined, txId: string, nowMs: number): TxConsumptionRecord {
   return {
     txId,
-    boundAt: existing?.boundAt ?? nowMs,
+    boundAt: existing?.boundAt !== undefined ? existing.boundAt : nowMs,
     consumedAt: nowMs,
   };
 }
